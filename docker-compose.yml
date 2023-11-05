@@ -1,0 +1,16 @@
+services:
+  postgress:
+    image: postgres:latest
+    container_name: postgres_tiktok_clone
+    restart: always
+    environment:
+      POSTGRES_USER: dev_tiktok_clone
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: db_tiktok_clone
+    ports:
+      - 5432:5432
+    volumes:
+      - my_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  my_postgres_data:
