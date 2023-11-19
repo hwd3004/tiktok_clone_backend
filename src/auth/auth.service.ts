@@ -104,14 +104,14 @@ export class AuthService {
 
   // 새로운 사용자 등록.
   async register(registerDto: RegisterDto, response: Response) {
-    console.trace('registerDto : ', registerDto);
+    console.log('registerDto : ', registerDto);
 
     const existingUser = await this.prisma.user.findUnique({
       where: { email: registerDto.email },
     });
 
     if (existingUser) {
-      throw new Error('Email already in use'); // Provide a proper error response
+      throw new BadRequestException({ email: 'Email already in use.' }); // Provide a proper error response
     }
 
     const hashedPassword = await bcrypt.hash(registerDto.password, 10);
@@ -124,7 +124,7 @@ export class AuthService {
       },
     });
 
-    console.trace('user : ', user);
+    console.log('user : ', user);
 
     return this.issueToken(user, response); // Issue tokens on registration
   }
@@ -134,7 +134,9 @@ export class AuthService {
     const user = await this.validateUser(loginDto);
 
     if (!user) {
-      throw new Error('Invalid credentials'); // Provide a proper error response
+      throw new BadRequestException({
+        invalidCredentials: 'Invalid credentials.',
+      }); // Provide a proper error response
     }
 
     return this.issueToken(user, response); // Issue tokens on login
